@@ -55,42 +55,41 @@ class LogisticRegression:
         fp = np.sum((y_prediction == 1) & (y == 0))
         tn = np.sum((y_prediction == 0) & (y == 0))
         fn = np.sum((y_prediction == 0) & (y == 1))
-        
+
         if metric_type.lower() == "accuracy":
             return (tp + tn) / (tp + tn + fp + fn) if (tp + tn + fp + fn) else 0.0
-        
+
         elif metric_type.lower() == "precision":
             return tp / (tp + fp) if (tp + fp) else 0.0
-        
+
         elif metric_type.lower() == "recall":
             return tp / (tp + fn) if (tp + fn) else 0.0
-        
+
         elif metric_type.lower() == "f1":
             prec = tp / (tp + fp) if (tp + fp) else 0.0
             rec = tp / (tp + fn) if (tp + fn) else 0.0
             return 2 * prec * rec / (prec + rec) if (prec + rec) else 0.0
         elif metric_type.lower() == "auroc":
-            y_proba = self.predict(x)  
-    
-            sorted_indices = np.argsort(y_proba)  
+            y_proba = self.predict(x)
+
+            sorted_indices = np.argsort(y_proba)
             y_sorted = y[sorted_indices]
-            
+
             n_pos = np.sum(y == 1)
             n_neg = np.sum(y == 0)
-            
+
             if n_pos == 0 or n_neg == 0:
                 return 0.5
-            
+
             rank_sum = 0
             for i in range(len(y_sorted)):
                 if y_sorted[i] == 1:
-                    rank_sum += (i + 1)
-            
+                    rank_sum += i + 1
+
             auc = (rank_sum - n_pos * (n_pos + 1) / 2) / (n_pos * n_neg)
             return float(auc)
         else:
             raise ValueError(f"Unknown metric: {metric_type}")
-
 
     def grad(self, x, y) -> tuple[np.ndarray, np.ndarray]:
         y_prediction = self.predict(x)
@@ -144,6 +143,7 @@ class Exercise:
                     grad_weights, grad_bias = model.grad(x_batch, y_batch)
                     model.weights -= lr * grad_weights
                     model.bias -= lr * grad_bias
+
     @staticmethod
     def get_iris_hyperparameters() -> dict[str, int | float]:
         return {"lr": 0.003, "batch_size": 4}
