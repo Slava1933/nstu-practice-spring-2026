@@ -37,13 +37,13 @@ class LinearLayer(Layer):
 
     def backward(self, dy: np.ndarray) -> np.ndarray:
         assert self._input is not None
-        # Градиент по весам: 
+        # Градиент по весам:
         self._grad_weights = dy.T @ self._input
 
-        # Градиент по bias: 
+        # Градиент по bias:
         self._grad_bias = np.sum(dy, axis=0)
 
-        # Градиент ко входу: 
+        # Градиент ко входу:
         dx = dy @ self.weights
 
         return dx
@@ -111,8 +111,8 @@ class LogSoftmaxLayer(Layer):
         exp_x = np.exp(x - x_max)
         sum_exp = np.sum(exp_x, axis=-1, keepdims=True)
 
-        self._softmax =  exp_x / (sum_exp)
-        self._output = (x - x_max) - np.log(sum_exp) 
+        self._softmax = exp_x / (sum_exp)
+        self._output = (x - x_max) - np.log(sum_exp)
 
         return self._output
 
@@ -140,7 +140,7 @@ class Model(Layer):
         return x
 
     def backward(self, dy: np.ndarray) -> np.ndarray:
-        for layer in reversed(self.layers): 
+        for layer in reversed(self.layers):
             dy = layer.backward(dy)
         return dy
 
